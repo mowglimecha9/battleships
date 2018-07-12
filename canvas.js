@@ -9,21 +9,26 @@ window.onload = function() {
 	paper.setup(canvas);
 	paper.install(window);
 	var tool = new Tool();
-		var path;
+	var path;
+	// Define a mousedown and mousedrag handler
+	tool.onMouseDown = function(event) {
+		path = new Path();
+		path.strokeColor = 'black';
+		path.add(event.point);
+	}
 
-		// Define a mousedown and mousedrag handler
-		tool.onMouseDown = function(event) {
-			path = new Path();
-			path.strokeColor = 'black';
-			path.add(event.point);
-		}
+	tool.onMouseDrag = function(event) {
+		path.add(event.point);
+	}
 
-		tool.onMouseDrag = function(event) {
-			path.add(event.point);
-		}
+	tool.onMouseUp = function(event) {
+		// path.closed = true;
+		// path.simplify();
 
-		tool.onMouseUp = function(event) {
-			path.closed = true;
-			path.simplify();
-		}
+		console.log(path);
+	}
+
+
+
+
 }

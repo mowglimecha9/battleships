@@ -12,11 +12,93 @@
 		}
 	</style>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.11.5/paper-full.js"></script>
-	<script type="text/javascript" src="canvas.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 </head>
 <body>
-	<canvas id="battleships">
-		
+	<canvas id="battleships">		
 	</canvas>
+	
+	<button id="attack">Attack</button>
+	<button id="save">Save</button>
+
+	<script type="text/javascript">
+		var windowWidth = window.innerWidth;
+		var windowHeight = window.innerHeight;
+		var socket = io();
+		var save = document.getElementById('save');
+			var attackStatus = false;
+		var attack = document.getElementById('attack');
+		window.onload = function() {
+			var attack = false;
+			save.style.display = "none";
+			// Get a reference to the canvas object
+			var canvas = document.getElementById('battleships');
+			canvas.width = 700;
+			canvas.height = 500;
+			paper.setup(canvas);
+			paper.install(window);
+			var tool = new Tool();
+			var attackTool = new Tool();
+			var count = 0;
+			var path;
+			var circle;
+			var circleShadow;
+			var start;
+			var radius;
+			var radiusShadow;
+			// var shipsData = [];
+			var ships = [];
+				// Define a mousedragdown and mousedrag handler
+				if (!attackStatus) {
+
+					tool.onMouseDown = function(event) {
+						if(count < 5) {
+							start = new Point(event.point);						
+						} else {
+							alert("max is 5");	
+							save.style.display = "block";
+						}
+					}
+
+					tool.onMouseDrag = function(event) {
+						if(count < 5) {
+							radius = Math.abs(start.x  - event.point.x);
+						}
+					}
+
+					tool.onMouseUp = function(event) {
+						if(radius >= 20 && count < 5) {
+
+		  					circle = new Path.Circle(start,radius);
+							circle.strokeColor = 'black';
+							
+							// ships[count]['shipsData']['x'] = circle.position.x;
+							// ships[count]['shipsData']['y'] = circle.position.y;
+							// ships[count]['shipsData']['radius'] = radius;	
+							
+							var data = {
+								'x':circle.position.x,
+								'y':circle.position.y,
+								'radius':radius
+							}
+							
+							ships.push(data);
+
+							count++;
+							console.table(ships);
+		
+						
+					}
+
+				}
+
+			}
+		}
+		attack.addEventListener('click',function() {
+			attackStatus = true;
+			console.log(attackStatus);	
+		})
+		
+	</script>
 </body>
 </html>
